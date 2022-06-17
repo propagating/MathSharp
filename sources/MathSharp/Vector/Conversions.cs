@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 using MathSharp.Utils;
@@ -13,17 +15,30 @@ namespace MathSharp
         [MethodImpl(MaxOpt)]
         public static Vector128<U> Load2As<T, U>(in T p) where T : unmanaged where U : unmanaged
         {
-            if (TypeHelper.IsType<U, float>())
+            if (typeof(U) == typeof(float))
             {
-                return Load2(TypeHelper.As<T, float>(in p)).As<float, U>();
+                var convertedFloat = BitConverter.ToSingle(GetBytesOfObject(p));
+                return Load2(convertedFloat).As<float, U>();
             }
-            if (TypeHelper.IsType<U, double>())
+            if (typeof(U) == typeof(double))
             {
-                return Load2(TypeHelper.As<T, double>(in p)).As<double, U>();
+                var convertedDouble = BitConverter.ToDouble(GetBytesOfObject(p));
+                return Load2(convertedDouble).As<double, U>();
             }
-
-            TypeHelper.ThrowForUnsupportedType<T>();
+            
             return default;
+            throw new NotSupportedException($"Could not store object of type {typeof(T)} as object of {typeof(U)}.");
+
+        }
+
+        public static ReadOnlySpan<byte> GetBytesOfObject<T>(in T p) where T : unmanaged
+        {
+            int size = Marshal.SizeOf(typeof(T));
+            var result = new byte[size];
+            var gcHandle = GCHandle.Alloc(p, GCHandleType.Pinned);
+            Marshal.Copy(gcHandle.AddrOfPinnedObject(), result, 0, size);
+            gcHandle.Free();
+            return new ReadOnlySpan<byte>(result);
         }
 
         [MethodImpl(MaxOpt)]
@@ -236,17 +251,17 @@ namespace MathSharp
             }
         }
 
-        [MethodImpl(MaxOpt)]
-        public static Vector256<double> LoadScalar(this double scalar)
-        {
-            return Vector256.CreateScalar(scalar);
-        }
-
-        [MethodImpl(MaxOpt)]
-        public static Vector256<double> LoadScalarBroadcast(this double scalar)
-        {
-            return Vector256.Create(scalar);
-        }
+        // [MethodImpl(MaxOpt)]
+        // public static Vector256<double> LoadScalar(this double scalar)
+        // {
+        //     return Vector256.CreateScalar(scalar);
+        // }
+        //
+        // [MethodImpl(MaxOpt)]
+        // public static Vector256<double> LoadScalarBroadcast(this double scalar)
+        // {
+        //     return Vector256.Create(scalar);
+        // }
 
         #endregion
 
@@ -255,17 +270,18 @@ namespace MathSharp
         [MethodImpl(MaxOpt)]
         public static void Store2As<T, U>(this Vector128<T> vector, ref U destination) where T : unmanaged where U : unmanaged
         {
-            if (TypeHelper.IsType<U, float>())
+            if (typeof(U) == typeof(float))
             {
                 Store2(vector.As<T, float>(), ref Unsafe.As<U, float>(ref destination));
             }
-            if (TypeHelper.IsType<U, double>())
+            if (typeof(U) == typeof(double))
             {
                 Store2(vector.As<T, double>(), ref Unsafe.As<U, double>(ref destination));
             }
-
-            TypeHelper.ThrowForUnsupportedType<T>();
+            
             destination = default;
+            throw new NotSupportedException($"Could not store object of type {typeof(T)} as object of {typeof(U)}.");
+
         }
 
         public static void Store4Aligned(this Vector128<float> vector, out float destination)
@@ -372,18 +388,18 @@ namespace MathSharp
             }
         }
 
-        [MethodImpl(MaxOpt)]
-        public static void StoreScalar(Vector128<float> scalar, float* destination)
-        {
-            *destination = scalar.ToScalar();
-        }
-
-        // remove pinning codegen as is unnecessary
-        [MethodImpl(MaxOpt)]
-        public static void StoreScalar(Vector128<float> scalar, out float destination)
-        {
-            destination = scalar.ToScalar();
-        }
+        // [MethodImpl(MaxOpt)]
+        // public static void StoreScalar(Vector128<float> scalar, float* destination)
+        // {
+        //     *destination = scalar.ToScalar();
+        // }
+        //
+        // // remove pinning codegen as is unnecessary
+        // [MethodImpl(MaxOpt)]
+        // public static void StoreScalar(Vector128<float> scalar, out float destination)
+        // {
+        //     destination = scalar.ToScalar();
+        // }
 
         public static void Store4Aligned(this Vector256<double> vector, double* destination)
            => Store4(vector, destination);
@@ -484,74 +500,74 @@ namespace MathSharp
             }
         }
 
-        public static void StoreScalar(this Vector256<double> scalar, double* destination)
-        {
-            *destination = scalar.ToScalar();
-        }
-
-        // remove pinning codegen as is unnecessary
-        public static void StoreScalar(this Vector256<double> scalar, out double destination)
-        {
-            destination = scalar.ToScalar();
-        }
-
-        #endregion
-
-        #region Movement
-
-
-        [MethodImpl(MaxOpt)]
-        public static Vector256<double> ScalarToVector(Vector256<double> scalar)
-        {
-            if (Avx2.IsSupported)
-            {
-                // TODO is this path better than Avx path or the same?
-                return Avx2.BroadcastScalarToVector256(scalar.GetLower());
-            }
-            else if (Avx.IsSupported)
-            {
-                return Avx.Permute(scalar, 0b_0000_0000);
-            }
-
-            return SoftwareFallback(scalar);
-
-            static Vector256<double> SoftwareFallback(Vector256<double> scalar)
-            {
-                return Vector256.Create(X(scalar));
-            }
-
-        }
+        // public static void StoreScalar(this Vector256<double> scalar, double* destination)
+        // {
+        //     *destination = scalar.ToScalar();
+        // }
+        //
+        // // remove pinning codegen as is unnecessary
+        // public static void StoreScalar(this Vector256<double> scalar, out double destination)
+        // {
+        //     destination = scalar.ToScalar();
+        // }
 
         #endregion
 
         #region Movement
 
 
-        [MethodImpl(MaxOpt)]
-        public static Vector128<float> ScalarToVector(Vector128<float> scalar)
-        {
-            if (Avx2.IsSupported)
-            {
-                // TODO is path better than Avx path or the same?
-                return Avx2.BroadcastScalarToVector128(scalar);
-            }
-            else if (Avx.IsSupported)
-            {
-                return Avx.Permute(scalar, 0b_0000_0000);
-            }
-            else if (Sse.IsSupported)
-            {
-                return Sse.Shuffle(scalar, scalar, 0b_0000_0000);
-            }
+        //[MethodImpl(MaxOpt)]
+        // public static Vector256<double> ScalarToVector(Vector256<double> scalar)
+        // {
+        //     if (Avx2.IsSupported)
+        //     {
+        //         // TODO is this path better than Avx path or the same?
+        //         return Avx2.BroadcastScalarToVector256(scalar.GetLower());
+        //     }
+        //     else if (Avx.IsSupported)
+        //     {
+        //         return Avx.Permute(scalar, 0b_0000_0000);
+        //     }
+        //
+        //     return SoftwareFallback(scalar);
+        //
+        //     static Vector256<double> SoftwareFallback(Vector256<double> scalar)
+        //     {
+        //         return Vector256.Create(X(scalar));
+        //     }
+        //
+        // }
 
-            return SoftwareFallback(scalar);
+        #endregion
 
-            static Vector128<float> SoftwareFallback(Vector128<float> scalar)
-            {
-                return Vector128.Create(X(scalar));
-            }
+        #region Movement
 
-        }
+        //
+        // [MethodImpl(MaxOpt)]
+        // public static Vector128<float> ScalarToVector(Vector128<float> scalar)
+        // {
+        //     if (Avx2.IsSupported)
+        //     {
+        //         // TODO is path better than Avx path or the same?
+        //         return Avx2.BroadcastScalarToVector128(scalar);
+        //     }
+        //     else if (Avx.IsSupported)
+        //     {
+        //         return Avx.Permute(scalar, 0b_0000_0000);
+        //     }
+        //     else if (Sse.IsSupported)
+        //     {
+        //         return Sse.Shuffle(scalar, scalar, 0b_0000_0000);
+        //     }
+        //
+        //     return SoftwareFallback(scalar);
+        //
+        //     static Vector128<float> SoftwareFallback(Vector128<float> scalar)
+        //     {
+        //         return Vector128.Create(X(scalar));
+        //     }
+        //
+        // }
         #endregion
     }
 }

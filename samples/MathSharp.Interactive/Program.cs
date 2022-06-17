@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
@@ -26,7 +27,7 @@ namespace MathSharp.Interactive
         }
 
 
-        public static Vector2<float> Add(in Vector2<float> left, in Vector2<float> right)
+        public static Vector<float> Add(in Vector<float> left, in Vector<float> right)
             => left + right;
 
         public static Vector128<float> IsInCircle(Vector128<float> radius, Vector128<float> x, Vector128<float> y)

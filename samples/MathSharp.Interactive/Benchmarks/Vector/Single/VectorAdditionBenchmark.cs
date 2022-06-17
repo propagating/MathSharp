@@ -41,8 +41,9 @@ namespace MathSharp.Interactive.Benchmarks.Vector.Single
         private SysVector2 _sysNumerics1;
         private SysVector2 _sysNumerics2;
 
-        private Vector2<float> _mathSharp1;
-        private Vector2<float> _mathSharp2;
+        //TODO: Implement MathSharp Vector2
+        // private Vector2<float> _mathSharp1;
+        // private Vector2<float> _mathSharp2;
 
         [Benchmark]
         public TkVector2 OpenTk()
@@ -68,14 +69,15 @@ namespace MathSharp.Interactive.Benchmarks.Vector.Single
             return k;
         }
 
-        [Benchmark]
-        public Vector2<float> MathSharp()
-        {
-            PaddedVector2<float> x = _mathSharp1 + _mathSharp2;
-            x *= Val0;
-            x /= Val1;
-            var k = x * x / 5;
-            return k;
-        }
+        //TODO: Implement MathSharp Vector2
+        // [Benchmark]
+        // public Vector2<float> MathSharp()
+        // {
+        //     PaddedVector2<float> x = _mathSharp1 + _mathSharp2;
+        //     x *= Val0;
+        //     x /= Val1;
+        //     var k = x * x / 5;
+        //     return k;
+        // }
     }
 }

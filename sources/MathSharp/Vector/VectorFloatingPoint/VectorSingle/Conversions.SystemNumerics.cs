@@ -11,13 +11,13 @@ namespace MathSharp
         [MethodImpl(MaxOpt)]
         public static Vector128<float> Load(this in Vector4 vector)
         {
-            return Load4(&vector.X);
+            return Load4(vector.X);
         }
 
         [MethodImpl(MaxOpt)]
         public static Vector128<float> Load(this in Vector3 vector)
         {
-            return Load3Aligned(&vector.X); // Vector3 is special cased to be 16 bytes on the stack to allow this
+            return Load3Aligned(vector.X); // Vector3 is special cased to be 16 bytes on the stack to allow this
         }
 
         [MethodImpl(MaxOpt)]

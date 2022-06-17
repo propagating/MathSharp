@@ -3,6 +3,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using static MathSharp.Utils.Helpers;
 using OpenTK;
+using OpenVector2 = OpenTK.Vector2;
+using SysVector2 = System.Numerics.Vector2;
 
 namespace MathSharp.UnitTests
 {
@@ -53,9 +55,9 @@ namespace MathSharp.UnitTests
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-        public static Vector2 ByValToSlowVector2(Vector128<float> vec)
+        public static OpenVector2 ByValToSlowVector2(Vector128<float> vec)
         {
-            return new Vector2(X(vec), Y(vec));
+            return new OpenVector2(X(vec), Y(vec));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
@@ -124,8 +126,20 @@ namespace MathSharp.UnitTests
             => left.X.Equals(X(right)) && left.Y.Equals(Y(right)) && left.Z.Equals(Z(right));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-        public static bool AreEqual(Vector2 left, Vector128<float> right)
+        public static bool AreEqual(OpenVector2 left, Vector128<float> right)
             => left.X.Equals(X(right)) && left.Y.Equals(Y(right));
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+        public static bool AreEqual(Vector128<float> left, OpenVector2 right)
+            => right.X.Equals(X(left)) && right.Y.Equals(Y(left));
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+        public static bool AreEqual(SysVector2 left, Vector128<float> right)
+            => left.X.Equals(X(right)) && left.Y.Equals(Y(right));
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+        public static bool AreEqual(Vector128<float> left, SysVector2 right)
+            => right.X.Equals(X(left)) && right.Y.Equals(Y(left));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
         public static bool AreEqual(float left, Vector128<float> right)
@@ -158,7 +172,7 @@ namespace MathSharp.UnitTests
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-        public static bool AreApproxEqual(Vector2 left, Vector128<float> right, float interval = 0.000000001f)
+        public static bool AreApproxEqual(OpenVector2 left, Vector128<float> right, float interval = 0.000000001f)
         {
             return AreApproxEqual(left.X, X(right), interval)
                    && AreApproxEqual(left.Y, Y(right), interval);

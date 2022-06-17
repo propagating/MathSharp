@@ -72,7 +72,8 @@ namespace MathSharp
                 {
                     VectorSize.V64 => false,
                     VectorSize.V128 => Sse.IsSupported /* || AdvSimd.IsSupported */,
-                    VectorSize.V256 => Avx.IsSupported
+                    VectorSize.V256 => Avx.IsSupported,
+                    _ => throw new ArgumentOutOfRangeException(nameof(vectorSize), vectorSize, null)
                 };
             }
 
@@ -83,7 +84,8 @@ namespace MathSharp
                 {
                     VectorSize.V64 => false,
                     VectorSize.V128 => Sse2.IsSupported,
-                    VectorSize.V256 => Avx.IsSupported
+                    VectorSize.V256 => Avx.IsSupported,
+                    _ => throw new ArgumentOutOfRangeException(nameof(vectorSize), vectorSize, null)
                 };
             }
 

@@ -450,7 +450,7 @@ namespace MathSharp
 
         [MethodImpl(MaxOpt)]
         private static Vector128<float> CrossProduct4D_Software(Vector128<float> one, Vector128<float> two, Vector128<float> three) 
-            => SoftwareFallbacks.CrossProduct4D_Software(one, two, three);
+            => SoftwareFallbacks.Cross4D_Software(one, two, three);
 
         #endregion
 
