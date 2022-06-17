@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Intrinsics;
-using System.Text;
+﻿using System.Runtime.Intrinsics;
 
-namespace MathSharp.Vector.VectorFloatingPoint.VectorSingle
+namespace MathSharp
 {
     public readonly struct HwVector
     {
         private readonly Vector128<float> Value;
 
-        public static HwVector operator + (HwVector left, HwVector right)
-        {
-            return Vector.Add(left, right);
-        }
+
     }
 }
