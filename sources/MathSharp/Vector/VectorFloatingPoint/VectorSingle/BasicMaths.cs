@@ -24,7 +24,7 @@ namespace MathSharp
         /// <returns>The absolute value of each element in <paramref name="vector"/></returns>
         [MethodImpl(MaxOpt)]
         public static Vector128<float> Abs(Vector128<float> vector)
-            => And(vector, SingleConstants.MaskSign);
+            => AndNot(SingleConstants.MaskSign, vector);
 
         /// <summary>
         /// Returns the absolute value of each element in <paramref name="vector"/>

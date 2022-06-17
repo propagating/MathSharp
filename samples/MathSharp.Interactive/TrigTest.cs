@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Intrinsics;
 
-using static MathSharp.Vector;
+
 
 namespace MathSharp.Interactive
 {
@@ -19,28 +19,28 @@ namespace MathSharp.Interactive
             if (doSin)
             {
                 Console.WriteLine($"MathF Sin:             {MathF.Sin(f)}");
-                Console.WriteLine($"MathSharp Sin:         {Sin(v).ToScalar()}");
-                Console.WriteLine($"MathSharp SinApprox:   {SinApprox(v).ToScalar()}");
+                Console.WriteLine($"MathSharp Sin:         {Vector.Sin(v).ToScalar()}");
+                Console.WriteLine($"MathSharp SinApprox:   {Vector.SinApprox(v).ToScalar()}");
             }
 
             if (doCos)
             {
                 Console.WriteLine($"MathF Cos:             {MathF.Cos(f)}");
-                Console.WriteLine($"MathSharp Cos:         {Cos(v).ToScalar()}");
-                Console.WriteLine($"MathSharp CosApprox:   {CosApprox(v).ToScalar()}");
+                Console.WriteLine($"MathSharp Cos:         {Vector.Cos(v).ToScalar()}");
+                Console.WriteLine($"MathSharp CosApprox:   {Vector.CosApprox(v).ToScalar()}");
             }
 
             if (doTan)
             {
                 Console.WriteLine($"MathF Tan:             {MathF.Tan(f)}");
-                Console.WriteLine($"MathSharp Tan:         {Tan(v).ToScalar()}");
-                Console.WriteLine($"MathSharp TanApprox:   {TanApprox(v).ToScalar()}");
+                Console.WriteLine($"MathSharp Tan:         {Vector.Tan(v).ToScalar()}");
+                Console.WriteLine($"MathSharp TanApprox:   {Vector.TanApprox(v).ToScalar()}");
             }
 
             if (doSinCos)
             {
-                SinCos(v, out Vector128<float> sin, out Vector128<float> cos);
-                SinCosApprox(v, out Vector128<float> sinEst, out Vector128<float> cosEst);
+                Vector.SinCos(v, out Vector128<float> sin, out Vector128<float> cos);
+                Vector.SinCosApprox(v, out Vector128<float> sinEst, out Vector128<float> cosEst);
 
                 Console.WriteLine($"MathF SinCos:             {MathF.Sin(f)}, {MathF.Cos(f)}");
                 Console.WriteLine($"MathSharp SinCos:         {sin.ToScalar()}, {cos.ToScalar()}");
@@ -50,14 +50,14 @@ namespace MathSharp.Interactive
             if (doATan)
             {
                 Console.WriteLine($"MathF ATan:             {MathF.Atan(f)}");
-                Console.WriteLine($"MathSharp ATan:         {ATan(v).ToScalar()}");
+                Console.WriteLine($"MathSharp ATan:         {Vector.ATan(v).ToScalar()}");
                 //Console.WriteLine($"MathSharp ATanApprox:   {ATanApprox(v).ToScalar()}");
             }
 
             if (doATan2)
             {
                 Console.WriteLine($"MathF ATan2:             {MathF.Atan2(f, f)}");
-                Console.WriteLine($"MathSharp ATan2:         {ATan2(v, v).ToScalar()}");
+                Console.WriteLine($"MathSharp ATan2:         {Vector.ATan2(v, v).ToScalar()}");
                 //Console.WriteLine($"MathSharp ATan2Approx:   {TanApprox(v).ToScalar()}");
             }
 

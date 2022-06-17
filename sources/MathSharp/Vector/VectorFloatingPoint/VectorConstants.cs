@@ -61,7 +61,7 @@ namespace MathSharp
                 }
             }
 
-            public static Vector128<float> MaskSign => Vector128.Create(int.MinValue).AsSingle();
+            public static Vector128<float> MaskSign => Vector128.Create(-0.0f).AsSingle();
             //{
             //    get { var i = int.MinValue; return Avx2.BroadcastScalarToVector128(&i).AsSingle(); }
             //}
